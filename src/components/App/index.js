@@ -2,11 +2,12 @@ import './index.css';
 //framework & 3rd parties
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-
+import { Translate } from 'react-localize-redux';
 // actions
 import * as todoActions from "../../actions/todoActions";
 
 // Components
+
 import MainLayout from "../Common/MainLayout"
 import Loading from "../Common/Loading"
 import TodoList from "../Todo/list"
@@ -50,7 +51,6 @@ class App extends Component {
 
     return (
       <MainLayout>
-
         <div className="col-lg-12">
           {isTodoListFetching &&
             <Loading />
@@ -59,23 +59,31 @@ class App extends Component {
         <div className="col-lg-12">
           <div className="row">
             <div className="col-lg-4 offset-lg-4">
-              <h1>Quick Add</h1>
+              <h1> <Translate id={'Quick Add'} /></h1>
               <TodoForm onSubmit={this.addTodo.bind(this)} />
             </div>
             <div className="col-lg-6">
+              <Translate>
+                {({ translate }) =>
+                  <TodoList
+                    title={translate('Tasks Pending')}
+                    onMarkComplete={this.onMarkComplete.bind(this)}
+                    onMarkUnDone={this.onMarkUnDone.bind(this)}
+                    data={itemsNotCompleted} />
+                }
+              </Translate>
 
-              <TodoList
-                title={`Tasks Pending`}
-                onMarkComplete={this.onMarkComplete.bind(this)}
-                onMarkUnDone={this.onMarkUnDone.bind(this)}
-                data={itemsNotCompleted} />
             </div>
 
             <div className="col-lg-6">
-              <TodoList title={`Task Completed`}
-                onMarkComplete={this.onMarkComplete.bind(this)}
-                onMarkUnDone={this.onMarkUnDone.bind(this)}
-                data={itemsCompleted} />
+              <Translate>
+                {({ translate }) =>
+                  <TodoList title={translate(`Task Completed`)}
+                    onMarkComplete={this.onMarkComplete.bind(this)}
+                    onMarkUnDone={this.onMarkUnDone.bind(this)}
+                    data={itemsCompleted} />}
+              </Translate>
+
             </div>
           </div>
         </div>
@@ -117,5 +125,5 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   { ...mapDispatchToProps }
-)(App);
+)((App));
 //#endregion

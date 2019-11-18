@@ -1,5 +1,5 @@
 import React, { Fragment } from "react"
-
+import LanguageToggle from "./LanguageToggle"
 
 
 
@@ -12,10 +12,12 @@ const MainLayout = ({ children }) => {
                 <span className="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
-                <ul className="navbar-nav">
+                <ul className="nav navbar-nav mr-auto">
                     <li className="nav-item">
-                      
                     </li>
+                </ul>
+                <ul className="nav navbar-nav">
+                    <li className="nav-item">   <LanguageToggle /></li>
                 </ul>
             </div>
         </nav>

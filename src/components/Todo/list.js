@@ -1,11 +1,11 @@
 import "./list.css"
 import React from "react"
-import { CheckCircle, CheckCircleOutline, Undo } from '@material-ui/icons'
+import { CheckCircle, CheckCircleOutline, Undo , Delete } from '@material-ui/icons'
 
 
 
 
-const TodoList = ({ title, data, onMarkComplete, onMarkUnDone }) => {
+const TodoList = ({ title, data, onMarkComplete, onMarkUnDone, onDelete }) => {
 
     return <div className="todolist">
         <h1>{title}</h1>
@@ -13,16 +13,17 @@ const TodoList = ({ title, data, onMarkComplete, onMarkUnDone }) => {
             {data.map((todo, index) => (
                 // all elements in a list must have a key, its react ray of tracking the elemnt 
                 <li key={index}>
-                    {todo.isComplete === true &&
+                    {todo.isCompleted === true &&
                         <span className="text-success" > <CheckCircle /> </span>
                     }
-                    {todo.isComplete === false &&
+                    {todo.isCompleted === false &&
                         <span className="pointer text-warning" onClick={(e) => onMarkComplete(todo)} > <CheckCircleOutline /> </span>
                     }
-                    {todo.description}
-                    {todo.isComplete === true &&
+                    {todo.taskDescription}
+                    {todo.isCompleted === true &&
                         <span className="pointer float-right text-danger" onClick={(e) => onMarkUnDone(todo)} > <Undo /> </span>
                     }
+                    <span className="pointer float-right " onClick={(e) => onDelete(todo)} > <Delete /> </span>
                 </li>
             ))}
         </ul>

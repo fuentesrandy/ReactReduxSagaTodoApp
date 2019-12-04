@@ -30,22 +30,25 @@ class App extends Component {
   onMarkUnDone(todo) {
     const { toggleTodo } = this.props;
     toggleTodo(todo); // this will dispatch an action 
-
-
   }
 
-  addTodo(values, setSubmitting, resetForm) {
+  onDelete(todo) {
+    const { removeTodo } = this.props;
+    removeTodo(todo);
+  }
+
+  addTodo(values) {
     const data = values;
     const { addTodo } = this.props;
+
     addTodo(data);
-    resetForm();
-    setSubmitting(false);
 
   }
 
   render() {
     const {
       isTodoListFetching
+      , isSubmitting
       , itemsCompleted
       , itemsNotCompleted } = this.props;
 
@@ -60,7 +63,7 @@ class App extends Component {
           <div className="row">
             <div className="col-lg-4 offset-lg-4">
               <h1> <Translate id={'Quick Add'} /></h1>
-              <TodoForm onSubmit={this.addTodo.bind(this)} />
+              <TodoForm isSubmitting={isSubmitting} onSubmit={this.addTodo.bind(this)} />
             </div>
             <div className="col-lg-6">
               <Translate>
@@ -69,6 +72,7 @@ class App extends Component {
                     title={translate('Tasks Pending')}
                     onMarkComplete={this.onMarkComplete.bind(this)}
                     onMarkUnDone={this.onMarkUnDone.bind(this)}
+                    onDelete={this.onDelete.bind(this)}
                     data={itemsNotCompleted} />
                 }
               </Translate>
@@ -81,6 +85,7 @@ class App extends Component {
                   <TodoList title={translate(`Task Completed`)}
                     onMarkComplete={this.onMarkComplete.bind(this)}
                     onMarkUnDone={this.onMarkUnDone.bind(this)}
+                    onDelete={this.onDelete.bind(this)}
                     data={itemsCompleted} />}
               </Translate>
 
@@ -100,12 +105,14 @@ class App extends Component {
 // This function returns an object which can be accesed inside the Component via props property
 function mapStateToProps(state, props) {
   const isTodoListFetching = state.todo.metadata.isFetching
-  const itemsCompleted = state.todo.data.filter(x => x.isComplete === true)
-  const itemsNotCompleted = state.todo.data.filter(x => x.isComplete === false)
+  const isSubmitting = state.todo.metadata.isSubmitting
+  const itemsCompleted = state.todo.data.filter(x => x.isCompleted === true)
+  const itemsNotCompleted = state.todo.data.filter(x => x.isCompleted === false)
   return {
     isTodoListFetching,
     itemsCompleted,
-    itemsNotCompleted
+    itemsNotCompleted,
+    isSubmitting
 
   };
 }
@@ -118,6 +125,7 @@ const mapDispatchToProps = {
   fetchTodos: todoActions.fetchTodos,
   toggleTodo: todoActions.toggleTodoComplete,
   addTodo: todoActions.addTodo,
+  removeTodo: todoActions.removeTodo
 };
 //#endregion
 

@@ -11,7 +11,7 @@ export const removeTodo = (payload) => ({
 });
 
 export const toggleTodoComplete = (payload) => ({
-    type: todoActions.TOGGLE_TODO_COMPLETE,
+    type: todoActions.TOGGLE_TODO,
     payload
 });
 
@@ -19,6 +19,7 @@ export const fetchTodos = () => ({
     type: todoActions.FETCH_TODOS_LIST
 })
 
-export const fetchTodo = () => ({
-    type: todoActions.FETCH_TODO
+export const fetchTodo = (payload) => ({
+    type: todoActions.FETCH_TODO,
+    payload
 })

@@ -1,63 +1,62 @@
 //
-import { takeLatest, put } from "redux-saga/effects";
-// actions
-import * as todoActionType from "../actionTypes/todoActionTypes"
+import { takeLatest, put, call } from "redux-saga/effects";
 
-
-// fake a web service call
-const delay = (ms) => new Promise(res => setTimeout(res, ms))
-
-const mockTodoData = [
-    {
-        id: 1,
-        description: "Cut Grass",
-        isComplete: false
-    },
-    {
-        id: 2,
-        description: "Wash Car",
-        isComplete: false
-    },
-    {
-        id: 3,
-        description: "Go grocery shopping",
-        isComplete: false
-    }
-
-]
+import * as todoApi from "./api/todoApi";
+import * as todoActionType from "../actionTypes/todoActionTypes";
 
 // *  Generator functions so we can use yield
 function* fetchTodoList() {
-    yield delay(1500);
-    yield put({
-        type: todoActionType.FETCH_TODOS_LIST_COMPLETE,
-        payload: mockTodoData
-    })
+  const response = yield call(todoApi.fetchTodos);
+  yield put({
+    type: todoActionType.FETCH_TODOS_LIST_COMPLETE,
+    payload: response
+  });
 }
 
-function* fetchTodo(id) {
-    yield delay(1500);
-    yield put({
-        type: todoActionType.FETCH_TODO_COMPLETE,
-        payload: mockTodoData.filter(x => x.id === id)[0]
-    })
+function* fetchTodo(action) {
+  const response = yield call(todoApi.fetchTodo, action.payload);
+  yield put({
+    type: todoActionType.FETCH_TODO_COMPLETE,
+    payload: response
+  });
 }
 
 function* addTodo(action) {
-    yield delay(500);
-    const data = {
-        id: Math.floor(Math.random() * 1001),
-        ...action.payload,
-        isComplete: action.payload.isComplete === true
-    }
-    yield put({
-        type: todoActionType.ADD_TODO_COMPLETE,
-        payload: data
-    })
+  const data = {
+    ...action.payload,
+    isCompleted: action.payload.isCompleted === true
+  };
+  const response = yield call(todoApi.insertTodo, data);
+  yield put({
+    type: todoActionType.ADD_TODO_COMPLETE,
+    payload: response
+  });
+}
+
+function* toggleTodo(action) {
+  const data = {
+    ...action.payload,
+    isCompleted: !action.payload.isCompleted
+  };
+  const response = yield call(todoApi.updateTodo, data);
+  yield put({
+    type: todoActionType.TOGGLE_TODO_COMPLETE,
+    payload: response
+  });
+}
+
+function* removeTodo(action) {
+  const response = yield call(todoApi.deleteTodo, action.payload.id);
+  yield put({
+    type: todoActionType.REMOVE_TODO_COMPLETE,
+    payload: action.payload
+  });
 }
 
 export default function* todoWatcher() {
-    yield takeLatest(todoActionType.FETCH_TODOS_LIST, fetchTodoList);
-    yield takeLatest(todoActionType.FETCH_TODO, fetchTodo);
-    yield takeLatest(todoActionType.ADD_TODO, addTodo);
+  yield takeLatest(todoActionType.FETCH_TODOS_LIST, fetchTodoList);
+  yield takeLatest(todoActionType.FETCH_TODO, fetchTodo);
+  yield takeLatest(todoActionType.ADD_TODO, addTodo);
+  yield takeLatest(todoActionType.TOGGLE_TODO, toggleTodo);
+  yield takeLatest(todoActionType.REMOVE_TODO, removeTodo);
 }
